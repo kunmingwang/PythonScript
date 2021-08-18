@@ -1,0 +1,18 @@
+# compare_mongodb_data.py
+此脚本主要作用是在同步mongodb的数据时做数据对比用的。用法如：
+python compare_mongodb_data.py   \
+--src="mongodb://mongoshake:mongoShake@127.0.0.1:27017,127.0.0.1:27018/admin?replicaSet=repl1"   \
+--dest='mongodb://mongoshake:mongoShake@127.0.0.1:27015,127.0.0.1:27016/admin?replicaSet=repl2' \
+--include-dbs=db1,db2,db3,db4 \
+--exclude-collections=system.profile  \
+--continue=True  \
+--latest-size=0  \
+--full-less-than=1000  \
+--check-perc=2  \
+--threads=10  \
+--batch-size=40  \
+--sample-version=40 \
+--comparison-mode=sample
+表示以repl1这个副本集的数据为基准，对比repl2这个副本集的数据，仅对比db1,db2,db3,db4这四个数据库，且排除对比system.profile集合，出现数据不一致的情况继续对比，
+并且不对比最新的数据，最小采样对比的行数为1000行，对比总数据量的2%，10个线程对比，每批对比40条数据，当版本大于4.0.x时使用sample函数采样，对比方法为sample采样对比
+
