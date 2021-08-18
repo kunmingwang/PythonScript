@@ -12,7 +12,7 @@ from threading import Thread
 '''
 参考：https://github.com/alibaba/MongoShake/blob/develop/scripts/comparison.py
 由于有mongodb副本集需要做一个版本升级操作，跨了大版本，按照官方的逐步升级不方便，于是使用阿里巴巴开源的mongoshake进行数据同步升级，在对比数据时发现，使用自带的comparison.py脚本，
-无法使用collection.aggregate()函数，所以基于自带脚本进行了改进，改进内容主要集中在对比部分，通过使用collection.find().limit()来分段对比数据，并添加了汇总展示信息
+无法使用collection.aggregate([{"$sample": {"size": xx}}])函数，所以基于自带脚本进行了改进，改进内容主要集中在对比部分，通过使用collection.find().limit()来分段对比数据，并添加了汇总展示信息
 以及命令行的部分，总体而言用这个脚本对比总行数速度能够接受，但是无论原版还是改版，在使用sample模式对比数据时还是比较慢的，使用时注意这点
 
 本脚本作为非营利性使用，如有侵权留言我删除
@@ -367,7 +367,7 @@ def usage():
 --full-less-than=1000 (抽样对比数据的最小行数，低于此值则全量对比)  \\
 --threads=1  (指定要对比数据使用的线程数，默认单线程)\\
 --batch-size=20 (每批对比多少行数据，默认30 范围20-50)  \\
---sample-version=40 (指定mongodb版本为多少时使用sample函数，默认4.0.x使用sample函数取数据对比，则这里要填写40，低于此版本用find().limit()取函数对比 建议调大此参数)   \\
+--sample-version=40 (指定mongodb版本为多少时使用sample函数，默认4.0.x使用collection.aggregate([{"$sample": {"size": xx}}])函数取数据对比，则这里要填写40，低于此版本用find().limit()取函数对比 建议调大此参数)   \\
 --comparison-mode=sample/all/no (sample: 采样检查 默认, all: 全量对比; no: 仅对比总行数和索引量)""")
     print()
 
